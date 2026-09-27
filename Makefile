@@ -17,3 +17,6 @@ ps:
 
 reset:
 	docker compose down --volumes --remove-orphans
+
+test:
+	PYTHONPATH=. pytest tests/
