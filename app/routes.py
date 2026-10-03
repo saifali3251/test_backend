@@ -9,6 +9,7 @@ from app import models, schemas
 from app.database import get_db
 
 router = APIRouter(prefix="/api")
+root_router = APIRouter()
 DbSession = Annotated[Session, Depends(get_db)]
 ModelType = TypeVar("ModelType")
 
@@ -26,6 +27,11 @@ def commit(db: Session) -> None:
     except IntegrityError as error:
         db.rollback()
         raise HTTPException(status_code=409, detail="A record with that value already exists") from error
+
+
+@root_router.get("/ping")
+def ping() -> dict[str, str]:
+    return {"ping": "pong"}
 
 
 @router.get("/health")

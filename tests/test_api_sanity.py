@@ -19,6 +19,13 @@ def test_health_check(client: TestClient):
     assert response.json() == {"status": "ok"}
 
 
+def test_ping(client: TestClient):
+    """Verify top-level /ping returns pong without touching the DB."""
+    response = client.get("/ping")
+    assert response.status_code == 200
+    assert response.json() == {"ping": "pong"}
+
+
 def test_project_crud_lifecycle(client: TestClient):
     """Full lifecycle: create project, read, update, and delete."""
     # 1. Create project
