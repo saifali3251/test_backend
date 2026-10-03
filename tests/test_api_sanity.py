@@ -115,3 +115,10 @@ def test_member_and_task_workflow(client: TestClient):
     assert summary["tasks"] >= 1
     assert summary["labels"] >= 1
 
+
+
+def test_ping(client: TestClient) -> None:
+    """Verify /api/ping returns pong."""
+    response = client.get("/api/ping")
+    assert response.status_code == 200
+    assert response.json() == {"ping": "pong"}
