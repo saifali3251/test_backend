@@ -4,6 +4,7 @@ workspace shows a populated UI instead of an empty one.
 Idempotent: no-ops if any project already exists, so re-running (or a golden
 rebuild finding an already-seeded DB) is safe.
 
+
 Run with: python -m app.seed
 """
 
