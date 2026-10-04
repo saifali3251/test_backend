@@ -34,6 +34,11 @@ def health(db: DbSession) -> dict[str, str]:
     return {"status": "ok"}
 
 
+@router.get("/ping", response_model=dict[str, str])
+def ping() -> dict[str, str]:
+    return {"ping": "pong"}
+
+
 @router.post("/projects", response_model=schemas.ProjectRead, status_code=status.HTTP_201_CREATED)
 def create_project(payload: schemas.ProjectCreate, db: DbSession) -> models.Project:
     project = models.Project(**payload.model_dump())
