@@ -111,3 +111,4 @@ class DashboardSummary(BaseModel):
     tasks: int
     labels: int
     tasks_by_status: dict[str, int]
+    tasks_by_priority: dict[str, int]

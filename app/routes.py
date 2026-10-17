@@ -212,10 +212,12 @@ def delete_task(task_id: int, db: DbSession) -> Response:
 @router.get("/dashboard/summary", response_model=schemas.DashboardSummary)
 def dashboard_summary(db: DbSession) -> schemas.DashboardSummary:
     status_rows = db.execute(select(models.Task.status, func.count()).group_by(models.Task.status)).all()
+    priority_rows = db.execute(select(models.Task.priority, func.count()).group_by(models.Task.priority)).all()
     return schemas.DashboardSummary(
         projects=db.scalar(select(func.count()).select_from(models.Project)) or 0,
         members=db.scalar(select(func.count()).select_from(models.Member)) or 0,
         tasks=db.scalar(select(func.count()).select_from(models.Task)) or 0,
         labels=db.scalar(select(func.count()).select_from(models.Label)) or 0,
         tasks_by_status={task_status: count for task_status, count in status_rows},
+        tasks_by_priority={task_priority: count for task_priority, count in priority_rows},
     )

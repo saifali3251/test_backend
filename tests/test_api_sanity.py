@@ -114,4 +114,10 @@ def test_member_and_task_workflow(client: TestClient):
     assert summary["members"] >= 1
     assert summary["tasks"] >= 1
     assert summary["labels"] >= 1
+    assert "tasks_by_priority" in summary
+    assert isinstance(summary["tasks_by_priority"], dict)
+    for priority, count in summary["tasks_by_priority"].items():
+        assert priority in ["low", "medium", "high"]
+        assert isinstance(count, int)
+        assert count >= 0
 
