@@ -170,12 +170,14 @@ def create_task(payload: schemas.TaskCreate, db: DbSession) -> models.Task:
 
 
 @router.get("/tasks", response_model=list[schemas.TaskRead])
-def list_tasks(db: DbSession, project_id: int | None = None, task_status: str | None = None) -> list[models.Task]:
+def list_tasks(db: DbSession, status: str | None = None, priority: str | None = None, project_id: int | None = None) -> list[models.Task]:
     query = task_query().order_by(models.Task.created_at.desc())
     if project_id is not None:
         query = query.where(models.Task.project_id == project_id)
-    if task_status is not None:
-        query = query.where(models.Task.status == task_status)
+    if status is not None:
+        query = query.where(models.Task.status == status)
+    if priority is not None:
+        query = query.where(models.Task.priority == priority)
     return list(db.scalars(query))
 
 

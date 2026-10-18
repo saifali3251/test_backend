@@ -115,3 +115,91 @@ def test_member_and_task_workflow(client: TestClient):
     assert summary["tasks"] >= 1
     assert summary["labels"] >= 1
 
+
+def test_list_tasks_filter_by_status(client: TestClient):
+    """Verify GET /api/tasks?status=in_progress filters results correctly."""
+    # Create some tasks with different statuses
+    project_res = client.post("/api/projects", json={"name": "Status Project", "status": "active"})
+    assert project_res.status_code == 201
+    project_id = project_res.json()["id"]
+
+    client.post(
+        "/api/tasks",
+        json={
+            "title": "Task 1",
+            "project_id": project_id,
+            "status": "in_progress",
+            "priority": "medium",
+        },
+    )
+    client.post(
+        "/api/tasks",
+        json={
+            "title": "Task 2",
+            "project_id": project_id,
+            "status": "done",
+            "priority": "low",
+        },
+    )
+    client.post(
+        "/api/tasks",
+        json={
+            "title": "Task 3",
+            "project_id": project_id,
+            "status": "in_progress",
+            "priority": "high",
+        },
+    )
+
+    # Filter by status 'in_progress'
+    response = client.get(f"/api/tasks?project_id={project_id}&status=in_progress")
+    assert response.status_code == 200
+    tasks = response.json()
+    assert len(tasks) == 2
+    for task in tasks:
+        assert task["status"] == "in_progress"
+
+
+def test_list_tasks_filter_by_priority(client: TestClient):
+    """Verify GET /api/tasks?priority=high filters results correctly."""
+    # Create some tasks with different priorities
+    project_res = client.post("/api/projects", json={"name": "Priority Project", "status": "active"})
+    assert project_res.status_code == 201
+    project_id = project_res.json()["id"]
+
+    client.post(
+        "/api/tasks",
+        json={
+            "title": "Task A",
+            "project_id": project_id,
+            "status": "todo",
+            "priority": "high",
+        },
+    )
+    client.post(
+        "/api/tasks",
+        json={
+            "title": "Task B",
+            "project_id": project_id,
+            "status": "in_progress",
+            "priority": "medium",
+        },
+    )
+    client.post(
+        "/api/tasks",
+        json={
+            "title": "Task C",
+            "project_id": project_id,
+            "status": "done",
+            "priority": "high",
+        },
+    )
+
+    # Filter by priority 'high'
+    response = client.get(f"/api/tasks?project_id={project_id}&priority=high")
+    assert response.status_code == 200
+    tasks = response.json()
+    assert len(tasks) == 2
+    for task in tasks:
+        assert task["priority"] == "high"
+
