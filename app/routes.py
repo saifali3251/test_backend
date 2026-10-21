@@ -28,6 +28,11 @@ def commit(db: Session) -> None:
         raise HTTPException(status_code=409, detail="A record with that value already exists") from error
 
 
+@router.get("/ping")
+def ping() -> dict[str, str]:
+    return {"ping": "pong"}
+
+
 @router.get("/health")
 def health(db: DbSession) -> dict[str, str]:
     db.execute(select(1))
